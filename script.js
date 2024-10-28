@@ -3,9 +3,10 @@ const inputNombre = document.getElementById('nombre');
 const listaCanciones = document.getElementById('lista-canciones');
 const mensaje = document.getElementById('mensaje');
 
+// URL del backend
 const URL_BACKEND = 'https://camaralegalfortaleza.com/guardar_cancion.php';
 
-// Enviar una nueva canción
+// Evento para enviar una nueva canción
 form.addEventListener('submit', async (e) => {
     e.preventDefault(); // Prevenir recarga de la página
 
@@ -21,7 +22,7 @@ form.addEventListener('submit', async (e) => {
             if (response.ok) {
                 mostrarMensaje('🎶 Canción guardada con éxito!');
                 inputNombre.value = ''; // Limpiar input
-                cargarCanciones(); // Actualizar lista
+                await cargarCanciones(); // Asegurarse de que la lista se actualice
             } else {
                 mostrarMensaje('❌ Error al guardar la canción.');
             }
@@ -32,16 +33,17 @@ form.addEventListener('submit', async (e) => {
     }
 });
 
-// Cargar la lista de canciones
+// Cargar la lista de canciones desde el servidor
 async function cargarCanciones() {
     try {
-        const response = await fetch(URL_BACKEND);
+        // Evitar que se cachee la respuesta añadiendo un parámetro único
+        const response = await fetch(`${URL_BACKEND}?_=${new Date().getTime()}`);
 
         if (!response.ok) {
             throw new Error(`Error al obtener canciones: ${response.statusText}`);
         }
 
-        const texto = await response.text(); // Leer respuesta como texto
+        const texto = await response.text(); // Leer como texto
         const canciones = texto ? JSON.parse(texto) : []; // Convertir a JSON si no está vacío
 
         mostrarCanciones(canciones); // Mostrar canciones en la lista
