@@ -3,11 +3,10 @@ const inputNombre = document.getElementById('nombre');
 const listaCanciones = document.getElementById('lista-canciones');
 const mensaje = document.getElementById('mensaje');
 
-// Cambia esta URL a la de tu servidor PHP
 const URL_BACKEND = 'https://camaralegalfortaleza.com/guardar_cancion.php';
 
 form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Evita recarga de página
+    e.preventDefault();
 
     const nombreCancion = inputNombre.value.trim();
 
@@ -24,7 +23,7 @@ form.addEventListener('submit', async (e) => {
             if (response.ok) {
                 mostrarMensaje('🎶 Canción guardada con éxito!');
                 inputNombre.value = '';
-                cargarCanciones(); // Actualiza la lista
+                cargarCanciones();
             } else {
                 mostrarMensaje('❌ Error al guardar la canción.');
             }
@@ -41,7 +40,7 @@ async function cargarCanciones() {
         const texto = await response.text();
         const canciones = texto.trim().split('\n');
 
-        listaCanciones.innerHTML = ''; // Limpiar la lista
+        listaCanciones.innerHTML = '';
         canciones.forEach((cancion, index) => {
             const li = document.createElement('li');
             li.textContent = `${index + 1}. ${cancion}`;
@@ -57,5 +56,4 @@ function mostrarMensaje(texto) {
     setTimeout(() => (mensaje.textContent = ''), 3000);
 }
 
-// Cargar las canciones al abrir la página
 document.addEventListener('DOMContentLoaded', cargarCanciones);
