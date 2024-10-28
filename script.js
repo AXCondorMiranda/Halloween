@@ -1,25 +1,44 @@
-document.getElementById('playlist').addEventListener('submit', function(event) {
-    event.preventDefault(); // Evita el envío tradicional del formulario
+document.addEventListener('DOMContentLoaded', cargarPlaylist);
 
-    const nombreCancion = document.getElementById('nombre').value;
+const form = document.getElementById('playlist');
+const inputNombre = document.getElementById('nombre');
+const mensaje = document.getElementById('mensaje');
+const listaCanciones = document.getElementById('lista-canciones');
 
-    // Realizar la solicitud AJAX con Fetch
-    fetch('save_song.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: 'nombre=' + encodeURIComponent(nombreCancion)
-    })
-    .then(response => response.text())
-    .then(data => {
-        // Mostrar mensaje de confirmación
-        const mensaje = document.getElementById('mensaje');
-        mensaje.textContent = data;
-        mensaje.style.display = 'block';
-        
-        // Limpiar el campo de texto
-        document.getElementById('nombre').value = '';
-    })
-    .catch(error => console.error('Error:', error));
+// Escuchar el envío del formulario
+form.addEventListener('submit', (e) => {
+    e.preventDefault(); // Prevenir recarga de la página
+
+    const nombreCancion = inputNombre.value.trim();
+
+    if (nombreCancion) {
+        guardarCancion(nombreCancion);
+        mostrarMensaje('🎶 Canción guardada con éxito!');
+        inputNombre.value = ''; // Limpiar el campo de entrada
+        cargarPlaylist(); // Actualizar la lista de canciones
+    } else {
+        mostrarMensaje('⚠️ Por favor, ingresa un nombre válido.');
+    }
 });
+
+function guardarCancion(cancion) {
+    let canciones = JSON.parse(localStorage.getItem('playlist')) || [];
+    canciones.push(cancion);
+    localStorage.setItem('playlist', JSON.stringify(canciones));
+}
+
+function cargarPlaylist() {
+    const canciones = JSON.parse(localStorage.getItem('playlist')) || [];
+    listaCanciones.innerHTML = ''; // Limpiar la lista
+
+    canciones.forEach((cancion, index) => {
+        const li = document.createElement('li');
+        li.textContent = `${index + 1}. ${cancion}`;
+        listaCanciones.appendChild(li);
+    });
+}
+
+function mostrarMensaje(texto) {
+    mensaje.textContent = texto;
+    setTimeout(() => (mensaje.textContent = ''), 3000); // Borrar mensaje después de 3 segundos
+}
