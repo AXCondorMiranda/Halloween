@@ -65,6 +65,11 @@ button:hover {
     background-color: #ff4500;
     transform: scale(1.1);
 }
+#lista-canciones {
+    height: 7vh;
+    overflow-y: scroll;
+    
+}
 
 /* Fuente especial para Halloween */
 @import url('https://fonts.googleapis.com/css2?family=Creepster&display=swap');
